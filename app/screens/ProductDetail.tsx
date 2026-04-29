@@ -12,8 +12,10 @@ import { colors, spacing } from '../styles/globalStyles';
 
 // Convert YYYY-MM-DD to DD-MM-YYYY
 const convertDateFormat = (dateString: string): string => {
-  if (!dateString) return '';
-  const [year, month, day] = dateString.split('-');
+  if (!dateString || typeof dateString !== 'string') return '';
+  const parts = dateString.split('-');
+  if (parts.length !== 3) return dateString;
+  const [year, month, day] = parts;
   return `${day}-${month}-${year}`;
 };
 

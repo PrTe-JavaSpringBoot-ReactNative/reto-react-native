@@ -20,7 +20,19 @@ export const fetchProducts = async (
       throw new Error(data.message || 'Error al obtener productos');
     }
 
-    return data;
+    const convertedData = data.data.map((item: any) => ({
+      id: item.id,
+      name: item.name,
+      description: item.description,
+      logo: item.logo,
+      dateRelease: item.date_release,
+      dateRevision: item.date_revision,
+    }));
+
+    return {
+      ...data,
+      data: convertedData,
+    };
   } catch (error) {
     console.error('Error fetching products:', error);
     throw error;

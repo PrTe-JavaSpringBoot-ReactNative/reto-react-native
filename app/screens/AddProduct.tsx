@@ -51,12 +51,12 @@ export default function AddProductScreen() {
   const nextYear = addOneYear(today);
 
   const [form, setForm] = useState<Partial<Product>>({
-    id: isEditing ? (params.id as string) : '',
-    name: isEditing ? (params.name as string) : '',
-    description: isEditing ? (params.description as string) : '',
-    logo: isEditing ? (params.logo as string) : '',
-    dateRelease: isEditing ? convertServerDateToUI(params.dateRelease as string) : today,
-    dateRevision: isEditing ? convertServerDateToUI(params.dateRevision as string) : nextYear,
+    id: isEditing ? (params.id as string || '') : '',
+    name: isEditing ? (params.name as string || '') : '',
+    description: isEditing ? (params.description as string || '') : '',
+    logo: isEditing ? (params.logo as string || '') : '',
+    dateRelease: isEditing && params.dateRelease ? convertServerDateToUI(params.dateRelease as string) : today,
+    dateRevision: isEditing && params.dateRevision ? convertServerDateToUI(params.dateRevision as string) : nextYear,
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState(false);
@@ -114,7 +114,7 @@ export default function AddProductScreen() {
       }
 
       setLoading(false);
-      router.back();
+      router.replace('/');
     } catch (err) {
       setSubmitError('Error al agregar el producto');
       setLoading(false);
@@ -133,12 +133,14 @@ export default function AddProductScreen() {
       <View style={styles.formGroup}>
         <Text style={styles.label}>ID *</Text>
         <TextInput
-          style={[styles.input, errors.id && styles.inputError]}
+          style={[styles.input, isEditing && styles.inputDisabled, errors.id && styles.inputError]}
           placeholder="Ej: PROD001"
           value={form.id}
           onChangeText={(text) => handleInputChange('id', text)}
           maxLength={10}
+          editable={!isEditing}
         />
+        {isEditing && <Text style={styles.helperText}>El ID no puede ser modificado</Text>}
         {errors.id && <Text style={styles.errorText}>{errors.id}</Text>}
       </View>
 
@@ -280,6 +282,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: spacing.xs,
     fontWeight: '500',
+  },
+  helperText: {
+    fontSize: 12,
+    color: colors.textGrey,
+    marginTop: spacing.xs,
+    fontStyle: 'italic',
   },
   submitError: {
     color: colors.error,

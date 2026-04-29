@@ -1,5 +1,5 @@
-import { useRouter } from 'expo-router';
-import { useState, useEffect } from 'react';
+import { useRouter, useFocusEffect } from 'expo-router';
+import { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -26,6 +26,12 @@ export default function ProductsListScreen() {
   useEffect(() => {
     loadProducts();
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      loadProducts();
+    }, [])
+  );
 
   const loadProducts = async () => {
     try {

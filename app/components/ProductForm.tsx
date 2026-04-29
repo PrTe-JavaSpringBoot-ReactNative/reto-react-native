@@ -61,8 +61,8 @@ export default function ProductForm({
     name: initialData?.name || '',
     description: initialData?.description || '',
     logo: initialData?.logo || '',
-    dateRelease: initialData?.dateRelease ? convertServerDateToUI(initialData.dateRelease) : today,
-    dateRevision: initialData?.dateRevision ? convertServerDateToUI(initialData.dateRevision) : nextYear,
+    dateRelease: initialData?.dateRelease && initialData.dateRelease.includes('-') ? convertServerDateToUI(initialData.dateRelease) : today,
+    dateRevision: initialData?.dateRevision && initialData.dateRevision.includes('-') ? convertServerDateToUI(initialData.dateRevision) : nextYear,
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
@@ -92,8 +92,8 @@ export default function ProductForm({
       name: initialData?.name || '',
       description: initialData?.description || '',
       logo: initialData?.logo || '',
-      dateRelease: initialData?.dateRelease ? convertServerDateToUI(initialData.dateRelease) : today,
-      dateRevision: initialData?.dateRevision ? convertServerDateToUI(initialData.dateRevision) : nextYear,
+      dateRelease: initialData?.dateRelease && initialData.dateRelease.includes('-') ? convertServerDateToUI(initialData.dateRelease) : today,
+      dateRevision: initialData?.dateRevision && initialData.dateRevision.includes('-') ? convertServerDateToUI(initialData.dateRevision) : nextYear,
     });
     setErrors({});
     setSubmitError(null);
