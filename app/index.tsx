@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   TextInput,
+  RefreshControl,
 } from 'react-native';
 import { Product } from './types';
 import { fetchProducts } from './services/productService';
@@ -17,6 +18,7 @@ export default function ProductsListScreen() {
   const router = useRouter();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
@@ -37,6 +39,21 @@ export default function ProductsListScreen() {
       console.error(err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    try {
+      setError(null);
+      const response = await fetchProducts();
+      setProducts(response.data);
+      setFilteredProducts(response.data);
+    } catch (err) {
+      setError('Error al actualizar los productos');
+      console.error(err);
+    } finally {
+      setRefreshing(false);
     }
   };
 
@@ -109,6 +126,14 @@ export default function ProductsListScreen() {
         contentContainerStyle={styles.listContent}
         ListEmptyComponent={
           <Text style={styles.emptyText}>No hay productos disponibles</Text>
+        }
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={[colors.primary]}
+            tintColor={colors.primary}
+          />
         }
       />
 
