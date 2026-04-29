@@ -1,11 +1,11 @@
 // Product types
 export interface Product {
   id: string;
-  nombre: string;
-  descripcion: string;
+  name: string;
+  description: string;
   logo: string;
-  fechaLiberacion: string;
-  fechaRevision: string;
+  dateRelease: string;
+  dateRevision: string;
 }
 
 export interface ApiResponse<T> {
@@ -17,9 +17,9 @@ export interface ApiResponse<T> {
 
 export interface FormErrors {
   id?: string;
-  nombre?: string;
-  descripcion?: string;
+  name?: string;
+  description?: string;
   logo?: string;
-  fechaLiberacion?: string;
-  fechaRevision?: string;
+  dateRelease?: string;
+  dateRevision?: string;
 }

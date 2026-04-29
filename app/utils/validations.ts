@@ -13,21 +13,21 @@ export const validateProduct = (product: Partial<Product>): FormErrors => {
   }
 
   // Validar Nombre
-  if (!product.nombre || product.nombre.trim() === '') {
-    errors.nombre = 'El nombre es requerido';
-  } else if (product.nombre.length < 5) {
-    errors.nombre = 'El nombre debe tener mínimo 5 caracteres';
-  } else if (product.nombre.length > 100) {
-    errors.nombre = 'El nombre debe tener máximo 100 caracteres';
+  if (!product.name || product.name.trim() === '') {
+    errors.name = 'El nombre es requerido';
+  } else if (product.name.length < 5) {
+    errors.name = 'El nombre debe tener mínimo 5 caracteres';
+  } else if (product.name.length > 100) {
+    errors.name = 'El nombre debe tener máximo 100 caracteres';
   }
 
   // Validar Descripción
-  if (!product.descripcion || product.descripcion.trim() === '') {
-    errors.descripcion = 'La descripción es requerida';
-  } else if (product.descripcion.length < 10) {
-    errors.descripcion = 'La descripción debe tener mínimo 10 caracteres';
-  } else if (product.descripcion.length > 200) {
-    errors.descripcion = 'La descripción debe tener máximo 200 caracteres';
+  if (!product.description || product.description.trim() === '') {
+    errors.description = 'La descripción es requerida';
+  } else if (product.description.length < 10) {
+    errors.description = 'La descripción debe tener mínimo 10 caracteres';
+  } else if (product.description.length > 200) {
+    errors.description = 'La descripción debe tener máximo 200 caracteres';
   }
 
   // Validar Logo
@@ -36,29 +36,29 @@ export const validateProduct = (product: Partial<Product>): FormErrors => {
   }
 
   // Validar Fecha de Liberación
-  if (!product.fechaLiberacion) {
-    errors.fechaLiberacion = 'La fecha de liberación es requerida';
+  if (!product.dateRelease) {
+    errors.dateRelease = 'La fecha de liberación es requerida';
   } else {
-    const liberation = new Date(product.fechaLiberacion);
+    const liberation = new Date(product.dateRelease);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     if (liberation < today) {
-      errors.fechaLiberacion = 'La fecha debe ser igual o mayor a la fecha actual';
+      errors.dateRelease = 'La fecha debe ser igual o mayor a la fecha actual';
     }
   }
 
   // Validar Fecha de Revisión
-  if (!product.fechaRevision) {
-    errors.fechaRevision = 'La fecha de revisión es requerida';
-  } else if (product.fechaLiberacion) {
-    const liberation = new Date(product.fechaLiberacion);
-    const revision = new Date(product.fechaRevision);
+  if (!product.dateRevision) {
+    errors.dateRevision = 'La fecha de revisión es requerida';
+  } else if (product.dateRelease) {
+    const liberation = new Date(product.dateRelease);
+    const revision = new Date(product.dateRevision);
     const expectedRevision = new Date(liberation);
     expectedRevision.setFullYear(expectedRevision.getFullYear() + 1);
 
     // Comparar sin la hora
     if (revision.toDateString() !== expectedRevision.toDateString()) {
-      errors.fechaRevision =
+      errors.dateRevision =
         'La fecha de revisión debe ser exactamente un año después de la fecha de liberación';
     }
   }

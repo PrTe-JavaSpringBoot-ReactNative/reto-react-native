@@ -47,7 +47,7 @@ export default function ProductsListScreen() {
     } else {
       const filtered = products.filter(
         (product) =>
-          product.nombre.toLowerCase().includes(text.toLowerCase()) ||
+          product.name.toLowerCase().includes(text.toLowerCase()) ||
           product.id.toLowerCase().includes(text.toLowerCase())
       );
       setFilteredProducts(filtered);
@@ -67,11 +67,8 @@ export default function ProductsListScreen() {
       onPress={() => handleSelectProduct(item)}
     >
       <View style={styles.cardContent}>
-        <Text style={styles.cardTitle}>{item.nombre}</Text>
+        <Text style={styles.cardTitle}>{item.name}</Text>
         <Text style={styles.cardId}>ID: {item.id}</Text>
-        <Text style={styles.cardDescription} numberOfLines={2}>
-          {item.descripcion}
-        </Text>
       </View>
     </TouchableOpacity>
   );
@@ -144,45 +141,32 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.text,
   },
-  countContainer: {
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    backgroundColor: colors.white,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-  countText: {
-    fontSize: 14,
-    color: colors.textGrey,
-    fontWeight: '500',
-  },
   listContent: {
-    padding: spacing.md,
+    padding: spacing.md / 2,
+    margin: spacing.md,
+    backgroundColor: colors.white,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
   card: {
     backgroundColor: colors.white,
     borderRadius: 8,
-    marginBottom: spacing.md,
-    padding: spacing.md,
-    borderWidth: 1,
-    borderColor: colors.border,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
   },
   cardContent: {
-    gap: spacing.sm,
+    
+    padding: spacing.md,
   },
   cardTitle: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '600',
-    color: colors.text,
+    color: colors.textGrey,
   },
   cardId: {
-    fontSize: 12,
-    color: colors.textGrey,
-  },
-  cardDescription: {
     fontSize: 13,
     color: colors.textGrey,
-    lineHeight: 18,
   },
   errorText: {
     color: colors.error,

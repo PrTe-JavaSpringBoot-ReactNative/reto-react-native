@@ -12,13 +12,15 @@ export default function RootLayout() {
         headerTintColor: colors.textGrey,
         headerTitleStyle: {
           fontSize: 18,
+          fontWeight: '700',
         },
+        headerTitleAlign: 'center',
       }}
     >
       <Stack.Screen
         name="index"
         options={{
-          title: 'Banco',
+          title: '🏦 BANCO',
         }}
       />
 

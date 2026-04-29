@@ -1,7 +1,7 @@
 import { Product, ApiResponse } from '../types';
 import { config } from '../config/env';
 
-const API_BASE_URL = `${config.API_BASE_URL}/products`;
+const API_BASE_URL = `${config.API_BASE_URL}/bp/products`;
 
 // Obtener lista de productos
 export const fetchProducts = async (
