@@ -23,6 +23,12 @@ export default function RootLayout() {
           title: '🏦 BANCO',
         }}
       />
+      <Stack.Screen
+        name="screens/ProductDetail"
+        options={{
+          title: '🏦 BANCO',
+        }}
+      />
 
     </Stack>
   );

@@ -3,13 +3,15 @@ import { StyleSheet } from 'react-native';
 export const colors = {
   primary: '#ffc400',
   secondary: '#b18700',
-  background: '#F2F2F7',
+  background: '#FFFFFF',
   white: '#FFFFFF',
   text: '#000000',
   textGrey: '#3a3a3a',
   border: '#E0E0E0',
   error: '#FF3B30',
   success: '#34C759',
+  grey: '#b9b9b9',
+  lightGrey: '#d9dee6',
 };
 
 export const spacing = {

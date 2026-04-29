@@ -57,7 +57,14 @@ export default function ProductsListScreen() {
   const handleSelectProduct = (product: Product) => {
     router.push({
       pathname: '/screens/ProductDetail',
-      params: { id: product.id },
+      params: {
+        id: product.id,
+        name: product.name,
+        description: product.description,
+        logo: product.logo,
+        dateRelease: product.dateRelease,
+        dateRevision: product.dateRevision,
+      },
     });
   };
 
@@ -92,7 +99,6 @@ export default function ProductsListScreen() {
           placeholderTextColor={colors.textGrey}
         />
       </View>
-
 
       {error && <Text style={styles.errorText}>{error}</Text>}
 
