@@ -8,10 +8,11 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "test": "jest",
-		"test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage"
   },
   "dependencies": {
     "expo": "~54.0.33",
+    "expo-dotenv": "^0.1.0",
     "expo-router": "~6.0.23",
     "expo-status-bar": "~3.0.9",
     "react": "19.1.0",
@@ -30,16 +31,20 @@
     "jest-expo": "^55.0.16",
     "typescript": "~5.9.2"
   },
-	"jest": {
-		"preset": "jest-expo",
-		"setupFilesAfterFramework": ["@testing-library/jest-native/extend-expect"],
-		"collectCoverage": true,
-		"coverageThreshold": {
-			"global": {
-				"lines": 70
-			}
-		},
-		"transformIgnorePatterns": [ "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg)" ]
-	},
+  "jest": {
+    "preset": "jest-expo",
+    "setupFilesAfterFramework": [
+      "@testing-library/jest-native/extend-expect"
+    ],
+    "collectCoverage": true,
+    "coverageThreshold": {
+      "global": {
+        "lines": 70
+      }
+    },
+    "transformIgnorePatterns": [
+      "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg)"
+    ]
+  },
   "private": true
 }
