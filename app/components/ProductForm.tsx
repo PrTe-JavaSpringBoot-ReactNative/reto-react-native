@@ -1,20 +1,25 @@
-import { useRouter, useLocalSearchParams } from 'expo-router';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
   TouchableOpacity,
   TextInput,
   ActivityIndicator,
 } from 'react-native';
 import { Product, FormErrors } from '../types';
 import { validateProduct, hasErrors } from '../utils/validations';
-import { createProduct, updateProduct } from '../services/productService';
 import { colors, spacing } from '../styles/globalStyles';
 
-// Helper function to format date as DD-MM-YYYY
+interface ProductFormProps {
+  initialData?: Partial<Product>;
+  isEditing?: boolean;
+  onSubmit: (product: Partial<Product>) => Promise<void>;
+  onReset: () => void;
+  submitButtonText?: string;
+  disableIdField?: boolean;
+}
+
 const formatDate = (date: Date): string => {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -22,13 +27,11 @@ const formatDate = (date: Date): string => {
   return `${day}-${month}-${year}`;
 };
 
-// Helper function to parse DD-MM-YYYY and convert to Date
 const parseDate = (dateString: string): Date => {
   const [day, month, year] = dateString.split('-').map(Number);
   return new Date(year, month - 1, day);
 };
 
-// Helper function to add 1 year to a date string (DD-MM-YYYY)
 const addOneYear = (dateString: string): string => {
   const date = parseDate(dateString);
   date.setFullYear(date.getFullYear() + 1);
@@ -42,22 +45,26 @@ const convertServerDateToUI = (dateString: string): string => {
   return `${day}-${month}-${year}`;
 };
 
-export default function AddProductScreen() {
-  const router = useRouter();
-  const params = useLocalSearchParams();
-  const isEditing = params.isEditing === 'true';
-
+export default function ProductForm({
+  initialData,
+  isEditing = false,
+  onSubmit,
+  onReset,
+  submitButtonText = 'Agregar',
+  disableIdField = false,
+}: ProductFormProps) {
   const today = formatDate(new Date());
   const nextYear = addOneYear(today);
 
   const [form, setForm] = useState<Partial<Product>>({
-    id: isEditing ? (params.id as string) : '',
-    name: isEditing ? (params.name as string) : '',
-    description: isEditing ? (params.description as string) : '',
-    logo: isEditing ? (params.logo as string) : '',
-    dateRelease: isEditing ? convertServerDateToUI(params.dateRelease as string) : today,
-    dateRevision: isEditing ? convertServerDateToUI(params.dateRevision as string) : nextYear,
+    id: initialData?.id || '',
+    name: initialData?.name || '',
+    description: initialData?.description || '',
+    logo: initialData?.logo || '',
+    dateRelease: initialData?.dateRelease ? convertServerDateToUI(initialData.dateRelease) : today,
+    dateRevision: initialData?.dateRevision ? convertServerDateToUI(initialData.dateRevision) : nextYear,
   });
+
   const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -65,7 +72,6 @@ export default function AddProductScreen() {
   const handleInputChange = (field: keyof Product, value: string) => {
     setForm({ ...form, [field]: value });
 
-    // Si cambia la fecha de liberación, actualizar automáticamente la fecha de revisión
     if (field === 'dateRelease' && value) {
       const newRevisionDate = addOneYear(value);
       setForm((prev) => ({
@@ -75,7 +81,6 @@ export default function AddProductScreen() {
       }));
     }
 
-    // Limpiar error del campo cuando el usuario empieza a escribir
     if (errors[field]) {
       setErrors({ ...errors, [field]: undefined });
     }
@@ -83,15 +88,16 @@ export default function AddProductScreen() {
 
   const handleReset = () => {
     setForm({
-      id: '',
-      name: '',
-      description: '',
-      logo: '',
-      dateRelease: today,
-      dateRevision: nextYear,
+      id: initialData?.id || '',
+      name: initialData?.name || '',
+      description: initialData?.description || '',
+      logo: initialData?.logo || '',
+      dateRelease: initialData?.dateRelease ? convertServerDateToUI(initialData.dateRelease) : today,
+      dateRevision: initialData?.dateRevision ? convertServerDateToUI(initialData.dateRevision) : nextYear,
     });
     setErrors({});
     setSubmitError(null);
+    onReset();
   };
 
   const handleSubmit = async () => {
@@ -105,40 +111,30 @@ export default function AddProductScreen() {
       }
 
       setLoading(true);
-
-      // Crear o actualizar producto
-      if (isEditing) {
-        await updateProduct(form.id as string, form);
-      } else {
-        await createProduct(form as Omit<Product, 'id'> & { id: string });
-      }
-
+      await onSubmit(form);
       setLoading(false);
-      router.back();
     } catch (err) {
-      setSubmitError('Error al agregar el producto');
+      setSubmitError(`Error al ${isEditing ? 'actualizar' : 'agregar'} el producto`);
       setLoading(false);
     }
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+    <View>
       {submitError && <Text style={styles.submitError}>{submitError}</Text>}
-
-      <View>
-        <Text style={styles.title}>Formulario de Registro</Text>
-      </View>
 
       {/* ID Field */}
       <View style={styles.formGroup}>
         <Text style={styles.label}>ID *</Text>
         <TextInput
-          style={[styles.input, errors.id && styles.inputError]}
+          style={[styles.input, disableIdField && styles.disabledInput, errors.id && styles.inputError]}
           placeholder="Ej: PROD001"
           value={form.id}
           onChangeText={(text) => handleInputChange('id', text)}
           maxLength={10}
+          editable={!disableIdField}
         />
+        {disableIdField && <Text style={styles.helperText}>El ID no puede ser modificado</Text>}
         {errors.id && <Text style={styles.errorText}>{errors.id}</Text>}
       </View>
 
@@ -198,12 +194,11 @@ export default function AddProductScreen() {
       <View style={styles.formGroup}>
         <Text style={styles.label}>Fecha de Revisión *</Text>
         <TextInput
-          style={[styles.input, styles.inputDisabled, errors.dateRevision && styles.inputError]}
+          style={[styles.input, styles.disabledInput, errors.dateRevision && styles.inputError]}
           placeholder="DD-MM-YYYY (se actualiza automáticamente)"
           value={form.dateRevision}
           onChangeText={(text) => handleInputChange('dateRevision', text)}
           editable={false}
-
         />
         {errors.dateRevision && <Text style={styles.errorText}>{errors.dateRevision}</Text>}
       </View>
@@ -218,7 +213,7 @@ export default function AddProductScreen() {
           {loading ? (
             <ActivityIndicator color={colors.text} />
           ) : (
-            <Text style={styles.submitButtonText}>Agregar</Text>
+            <Text style={styles.submitButtonText}>{submitButtonText}</Text>
           )}
         </TouchableOpacity>
 
@@ -226,25 +221,11 @@ export default function AddProductScreen() {
           <Text style={styles.resetButtonText}>Reiniciar</Text>
         </TouchableOpacity>
       </View>
-    </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  title: {
-    fontSize: 25,
-    fontWeight: '600',
-    color: colors.text,
-    marginBottom: spacing.md,
-  },
-  contentContainer: {
-    padding: spacing.md,
-    paddingBottom: spacing.lg * 2,
-  },
   formGroup: {
     marginBottom: spacing.lg,
   },
@@ -264,9 +245,9 @@ const styles = StyleSheet.create({
     color: colors.text,
     backgroundColor: colors.white,
   },
-  inputDisabled:{
-    backgroundColor: colors.lightGrey,
-    color: colors.grey,
+  disabledInput: {
+    backgroundColor: '#F5F5F5',
+    color: colors.textGrey,
   },
   inputError: {
     borderColor: colors.error,
@@ -274,6 +255,12 @@ const styles = StyleSheet.create({
   textArea: {
     paddingTop: spacing.md,
     textAlignVertical: 'top',
+  },
+  helperText: {
+    fontSize: 12,
+    color: colors.textGrey,
+    marginTop: spacing.xs,
+    fontStyle: 'italic',
   },
   errorText: {
     color: colors.error,

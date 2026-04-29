@@ -10,6 +10,13 @@ import {
 import { Product } from '../types';
 import { colors, spacing } from '../styles/globalStyles';
 
+// Convert YYYY-MM-DD to DD-MM-YYYY
+const convertDateFormat = (dateString: string): string => {
+  if (!dateString) return '';
+  const [year, month, day] = dateString.split('-');
+  return `${day}-${month}-${year}`;
+};
+
 export default function ProductDetailScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
@@ -67,26 +74,36 @@ export default function ProductDetailScreen() {
         <View style={styles.fieldRow}>
           <Text style={styles.fieldLabel}>Fecha liberación</Text>
           <Text style={styles.fieldValue}>
-            [{new Date(product.dateRelease).toLocaleDateString('es-ES')}]
+            [{convertDateFormat(product.dateRelease)}]
           </Text>
         </View>
 
         <View style={styles.fieldRow}>
           <Text style={styles.fieldLabel}>Fecha revisión</Text>
           <Text style={styles.fieldValue}>
-            [{new Date(product.dateRevision).toLocaleDateString('es-ES')}]
+            [{convertDateFormat(product.dateRevision)}]
           </Text>
         </View>
       </View>
 
       {/* Buttons */}
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={[styles.button, styles.editButton]} >
+        <TouchableOpacity
+          style={[styles.button, styles.editButton]}
+          onPress={() => router.push({
+            pathname: '/screens/AddProduct',
+            params: {
+              isEditing: 'true',
+              id: product.id,
+              name: product.name,
+              description: product.description,
+              logo: product.logo,
+              dateRelease: product.dateRelease,
+              dateRevision: product.dateRevision,
+            },
+          })}
+        >
           <Text style={styles.editButtonText}>Editar</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={[styles.button, styles.deleteButton]} >
-          <Text style={styles.deleteButtonText}>Eliminar</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>

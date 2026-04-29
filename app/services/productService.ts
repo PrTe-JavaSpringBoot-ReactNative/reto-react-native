@@ -3,13 +3,11 @@ import { config } from '../config/env';
 
 const API_BASE_URL = `${config.API_BASE_URL}/bp/products`;
 
-// Helper function to convert DD-MM-YYYY to YYYY-MM-DD
 const convertDateToServer = (dateString: string): string => {
   const [day, month, year] = dateString.split('-');
   return `${year}-${month}-${day}`;
 };
 
-// Obtener lista de productos
 export const fetchProducts = async (
 ): Promise<ApiResponse<Product>> => {
   try {
@@ -31,8 +29,6 @@ export const fetchProducts = async (
 
 export const createProduct = async (product: Omit<Product, 'id'> & { id: string }): Promise<Product> => {
   try {
-    // Convert to snake_case format expected by backend
-    // Convert dates from DD-MM-YYYY to YYYY-MM-DD
     const productToSend = {
       id: product.id,
       name: product.name,
@@ -59,6 +55,43 @@ export const createProduct = async (product: Omit<Product, 'id'> & { id: string 
     return data.data;
   } catch (error) {
     console.error('Error creating product:', error);
+    throw error;
+  }
+};
+
+export const updateProduct = async (id: string, product: Partial<Product>): Promise<Product> => {
+  try {
+    const productToSend: any = {
+      name: product.name,
+      description: product.description,
+      logo: product.logo,
+    };
+
+    if (product.dateRelease) {
+      productToSend.date_release = convertDateToServer(product.dateRelease);
+    }
+    if (product.dateRevision) {
+      productToSend.date_revision = convertDateToServer(product.dateRevision);
+    }
+
+    const response = await fetch(`${API_BASE_URL}/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(productToSend),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.errors?.[0] || data.message || 'Error al actualizar producto');
+    }
+
+    return data.data;
+
+  } catch (error) {
+    console.error('Error updating product:', error);
     throw error;
   }
 };
