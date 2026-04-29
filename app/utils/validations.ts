@@ -1,5 +1,12 @@
 import { FormErrors, Product } from '../types';
 
+// Helper function to parse DD-MM-YYYY format
+const parseDate = (dateString: string): Date | null => {
+  const [day, month, year] = dateString.split('-').map(Number);
+  if (!day || !month || !year) return null;
+  return new Date(year, month - 1, day);
+};
+
 export const validateProduct = (product: Partial<Product>): FormErrors => {
   const errors: FormErrors = {};
 
@@ -35,31 +42,40 @@ export const validateProduct = (product: Partial<Product>): FormErrors => {
     errors.logo = 'El logo es requerido';
   }
 
-  // Validar Fecha de Liberación
+  // Validar Fecha de Liberación (DD-MM-YYYY)
   if (!product.dateRelease) {
     errors.dateRelease = 'La fecha de liberación es requerida';
   } else {
-    const liberation = new Date(product.dateRelease);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    if (liberation < today) {
-      errors.dateRelease = 'La fecha debe ser igual o mayor a la fecha actual';
+    const liberation = parseDate(product.dateRelease);
+    if (!liberation) {
+      errors.dateRelease = 'Formato de fecha inválido. Use DD-MM-YYYY';
+    } else {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      liberation.setHours(0, 0, 0, 0);
+      if (liberation < today) {
+        errors.dateRelease = 'La fecha debe ser igual o mayor a la fecha actual';
+      }
     }
   }
 
-  // Validar Fecha de Revisión
+  // Validar Fecha de Revisión (DD-MM-YYYY)
   if (!product.dateRevision) {
     errors.dateRevision = 'La fecha de revisión es requerida';
   } else if (product.dateRelease) {
-    const liberation = new Date(product.dateRelease);
-    const revision = new Date(product.dateRevision);
-    const expectedRevision = new Date(liberation);
-    expectedRevision.setFullYear(expectedRevision.getFullYear() + 1);
+    const liberation = parseDate(product.dateRelease);
+    const revision = parseDate(product.dateRevision);
 
-    // Comparar sin la hora
-    if (revision.toDateString() !== expectedRevision.toDateString()) {
-      errors.dateRevision =
-        'La fecha de revisión debe ser exactamente un año después de la fecha de liberación';
+    if (!liberation || !revision) {
+      errors.dateRevision = 'Formato de fecha inválido. Use DD-MM-YYYY';
+    } else {
+      const expectedRevision = new Date(liberation);
+      expectedRevision.setFullYear(expectedRevision.getFullYear() + 1);
+
+      if (revision.toDateString() !== expectedRevision.toDateString()) {
+        errors.dateRevision =
+          'La fecha de revisión debe ser exactamente un año después de la fecha de liberación';
+      }
     }
   }
 

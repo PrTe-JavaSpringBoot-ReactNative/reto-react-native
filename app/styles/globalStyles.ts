@@ -11,7 +11,7 @@ export const colors = {
   error: '#FF3B30',
   success: '#34C759',
   grey: '#b9b9b9',
-  lightGrey: '#d9dee6',
+  lightGrey: '#e7eaee',
 };
 
 export const spacing = {

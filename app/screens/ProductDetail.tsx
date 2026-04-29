@@ -24,27 +24,6 @@ export default function ProductDetailScreen() {
     dateRevision: params.dateRevision as string,
   };
 
-  const handleEdit = () => {
-    if (product) {
-      router.push({
-        pathname: '/screens/EditProduct',
-        params: {
-          id: product.id,
-          name: product.name,
-          description: product.description,
-          logo: product.logo,
-          dateRelease: product.dateRelease,
-          dateRevision: product.dateRevision,
-        },
-      });
-    }
-  };
-
-  const handleDelete = async () => {
-    if (product) {
-      //... no implementado ya que no se incluye el F6
-    }
-  };
 
   if (error) {
     return (
@@ -102,11 +81,11 @@ export default function ProductDetailScreen() {
 
       {/* Buttons */}
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={[styles.button, styles.editButton]} onPress={handleEdit}>
+        <TouchableOpacity style={[styles.button, styles.editButton]} >
           <Text style={styles.editButtonText}>Editar</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={[styles.button, styles.deleteButton]} onPress={handleDelete}>
+        <TouchableOpacity style={[styles.button, styles.deleteButton]} >
           <Text style={styles.deleteButtonText}>Eliminar</Text>
         </TouchableOpacity>
       </View>
