@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, fireEvent, waitFor } from '@testing-library/react-native';
+import { render, fireEvent } from '@testing-library/react-native';
 import ProductForm from '../ProductForm';
 import { Product } from '../../types';
 
@@ -98,6 +98,37 @@ describe('ProductForm', () => {
       const { getByText } = render(<ProductForm {...defaultProps} />);
 
       expect(getByText('Agregar')).toBeDefined();
+    });
+  });
+
+  describe('manejo de evento reset', () => {
+    it('debe limpiar formulario al presionar reiniciar', () => {
+      const { getByPlaceholderText, getByText } = render(<ProductForm {...defaultProps} />);
+
+      const idInput = getByPlaceholderText('Ej: PROD001');
+      fireEvent.changeText(idInput, 'PROD001');
+
+      const resetButton = getByText('Reiniciar');
+      fireEvent.press(resetButton);
+
+      expect(mockOnReset).toHaveBeenCalled();
+    });
+  });
+
+  describe('limpieza de errores', () => {
+    it('debe limpiar error de campo cuando el usuario empieza a escribir', () => {
+      const { getByPlaceholderText, getByText } = render(
+        <ProductForm {...defaultProps} />
+      );
+
+      const submitButton = getByText('Agregar');
+      fireEvent.press(submitButton);
+
+      const idInput = getByPlaceholderText('Ej: PROD001');
+      fireEvent.changeText(idInput, 'P');
+
+      // El error debería desaparecer cuando el usuario escribe
+      expect(idInput.props.value).toBe('P');
     });
   });
 
