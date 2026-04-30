@@ -36,6 +36,12 @@
       "@testing-library/jest-native/extend-expect"
     ],
     "collectCoverage": true,
+    "collectCoverageFrom": [
+      "app/**/*.{ts,tsx}",
+      "!app/**/*.test.{ts,tsx}",
+      "!app/**/node_modules/**",
+      "!app/**/__tests__/**"
+    ],
     "coverageThreshold": {
       "global": {
         "lines": 70
