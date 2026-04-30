@@ -125,29 +125,32 @@ export default function ProductsListScreen() {
 
       {error && <Text style={styles.errorText}>{error}</Text>}
 
-      <FlatList
-        data={filteredProducts}
-        renderItem={renderProductCard}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.listContent}
-        ListEmptyComponent={
-          <Text style={styles.emptyText}>No hay productos disponibles</Text>
-        }
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            colors={[colors.primary]}
-            tintColor={colors.primary}
-          />
-        }
-      />
+      <View style={styles.listContainer}>
+        <FlatList
+          data={filteredProducts}
+          renderItem={renderProductCard}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.listContent}
+          ListEmptyComponent={
+            <Text style={styles.emptyText}>No hay productos disponibles</Text>
+          }
+          scrollEnabled={true}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={[colors.primary]}
+              tintColor={colors.primary}
+            />
+          }
+        />
+      </View>
 
       <TouchableOpacity
         style={styles.addButton}
         onPress={() => router.push('/screens/AddProduct')}
       >
-        <Text style={styles.addButtonText}>+ Agregar Producto</Text>
+        <Text style={styles.addButtonText}>Agregar</Text>
       </TouchableOpacity>
     </View>
   );
@@ -178,13 +181,18 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.text,
   },
-  listContent: {
-    padding: spacing.md / 2,
-    margin: spacing.md,
+  listContainer: {
+    flex: 1,
+    marginHorizontal: spacing.md,
+    marginTop: spacing.md,
+    marginBottom: 120,
     backgroundColor: colors.white,
     borderRadius: 8,
     borderWidth: 1,
     borderColor: colors.border,
+  },
+  listContent: {
+    padding: spacing.md / 2,
   },
   card: {
     backgroundColor: colors.white,

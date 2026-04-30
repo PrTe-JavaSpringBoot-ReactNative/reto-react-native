@@ -32,7 +32,7 @@ export default function RootLayout() {
       <Stack.Screen
         name="screens/AddProduct"
         options={{
-          title: 'Agregar Producto',
+          title: '🏦 BANCO',
         }}
       />
     </Stack>

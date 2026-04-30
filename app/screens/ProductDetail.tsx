@@ -107,6 +107,12 @@ export default function ProductDetailScreen() {
         >
           <Text style={styles.editButtonText}>Editar</Text>
         </TouchableOpacity>
+         <TouchableOpacity
+          style={[styles.button, styles.deleteButton]}
+          onPress={() => console.log("no implementado aún")}
+        >
+          <Text style={styles.deleteButtonText}>Eliminar</Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );
@@ -129,7 +135,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.lg,
   },
   idValue: {
-    fontSize: 16,
+    fontSize: 25,
     fontWeight: '600',
     color: colors.text,
     marginBottom: spacing.xs,

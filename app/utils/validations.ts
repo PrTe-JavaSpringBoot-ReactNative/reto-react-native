@@ -1,6 +1,5 @@
 import { FormErrors, Product } from '../types';
 
-// Helper function to parse DD-MM-YYYY format
 const parseDate = (dateString: string): Date | null => {
   const [day, month, year] = dateString.split('-').map(Number);
   if (!day || !month || !year) return null;
